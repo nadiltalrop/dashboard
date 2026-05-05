@@ -1,23 +1,6 @@
 import Link from "next/link";
 import UserTable from "../components/UserTable";
-
-async function fetchUsers(
-  page: number = 1,
-  search: string = ""
-) {
-  const limit = 6;
-  const skip = (page - 1) * limit;
-
-  const url = search
-    ? `https://dummyjson.com/users/search?q=${search}&limit=${limit}&skip=${skip}`
-    : `https://dummyjson.com/users?limit=${limit}&skip=${skip}`;
-
-  const response = await fetch(url, {
-    cache: "no-store",
-  });
-
-  return response.json();
-}
+import { getUsers } from "../lib/api/users";
 
 export default async function Dashboard({
   searchParams,
@@ -33,7 +16,7 @@ export default async function Dashboard({
   const search = params.search || "";
   const limit = 6;
 
-  const data = await fetchUsers(currentPage, search);
+  const data = await getUsers(currentPage, search);
 
   const users = data.users;
   const totalPages = Math.ceil(data.total / limit);
@@ -46,13 +29,11 @@ export default async function Dashboard({
 
   const buildUrl = (page: number) =>
     `/dashboard?page=${page}${
-      search ? `&search=${search}` : ""
+      search ? `&search=${encodeURIComponent(search)}` : ""
     }`;
 
   return (
     <div className="p-8 space-y-6">
-      <h1 className="text-2xl font-bold">Users Table</h1>
-
       <UserTable users={users} />
 
       <div className="flex justify-center gap-2">
