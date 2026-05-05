@@ -1,4 +1,5 @@
 import SearchBar from "./SearchBar";
+import Link from "next/link";
 
 type User = {
   id: number;
@@ -42,7 +43,12 @@ export default function UserTable({ users }: { users: User[] }) {
                 className="hover:bg-gray-50 transition duration-200"
               >
                 <td className="px-6 py-4 font-medium text-gray-700">
-                  {user.id}
+                    <Link
+                        href={`/dashboard/${user.id}`}
+                        className="text-blue-600 hover:underline"
+                    >
+                        {user.id}
+                    </Link>
                 </td>
 
                 <td className="px-6 py-4">
@@ -52,12 +58,17 @@ export default function UserTable({ users }: { users: User[] }) {
                     </div>
 
                     <div>
-                      <p className="font-medium text-gray-800">
-                        {user.firstName} {user.lastName}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        User Profile
-                      </p>
+                        <Link
+                            href={`/dashboard/${user.id}`}
+                            className="text-blue-600 hover:underline"
+                        >
+                            <p className="font-medium text-gray-800">
+                                {user.firstName} {user.lastName}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                                User Profile
+                            </p>  
+                        </Link>
                     </div>
                   </div>
                 </td>

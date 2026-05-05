@@ -19,3 +19,18 @@ export async function getUsers(
 
   return response.json();
 }
+
+export async function getUserById(id: string) {
+  const response = await fetch(
+    `https://dummyjson.com/users/${id}`,
+    {
+      cache: "no-store",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch user");
+  }
+
+  return response.json();
+}
