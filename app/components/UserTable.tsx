@@ -1,3 +1,5 @@
+import SearchBar from "./SearchBar";
+
 type User = {
   id: number;
   firstName: string;
@@ -16,10 +18,9 @@ export default function UserTable({ users }: { users: User[] }) {
             Manage and view all registered users
           </p>
         </div>
-
-        <span className="px-3 py-1 text-sm font-medium rounded-full bg-gray-100 text-gray-700">
-          {users.length} Total
-        </span>
+        <div>
+            <SearchBar />
+        </div>
       </div>
 
       <div className="overflow-x-auto">
