@@ -4,7 +4,7 @@ A production-style admin dashboard built with Next.js App Router for browsing us
 
 ## Live Demo
 
-- Add deployed URL here after Vercel/Netlify deployment: `https://your-app-url`
+- Add deployed URL here after Vercel/Netlify deployment: `https://dashboard-vert-phi-45.vercel.app/dashboard?page=1`
 
 ## Features Implemented
 
