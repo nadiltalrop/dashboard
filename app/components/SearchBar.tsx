@@ -1,34 +1,27 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function SearchBar() {
-  const router = useRouter();
-  const params = useSearchParams();
+type SearchBarProps = {
+  value: string;
+  onDebouncedChange: (value: string) => void;
+};
 
-  const [search, setSearch] = useState(params.get("search") || "");
+export default function SearchBar({ value, onDebouncedChange }: SearchBarProps) {
+  const [search, setSearch] = useState(value);
 
-  function handleSearch(value: string) {
-    setSearch(value);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onDebouncedChange(search.trim());
+    }, 400);
 
-    const query = new URLSearchParams(params.toString());
-
-    if (value) {
-      query.set("search", value);
-    } else {
-      query.delete("search");
-    }
-
-    query.set("page", "1");
-
-    router.push(`/dashboard?${query.toString()}`);
-  }
+    return () => clearTimeout(timer);
+  }, [search, onDebouncedChange]);
 
   return (
     <input
       value={search}
-      onChange={(e) => handleSearch(e.target.value)}
+      onChange={(e) => setSearch(e.target.value)}
       placeholder="Search users..."
       className="px-4 py-2 border rounded-xl w-72"
     />

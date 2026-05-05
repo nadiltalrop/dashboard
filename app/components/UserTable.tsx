@@ -1,15 +1,18 @@
-import SearchBar from "./SearchBar";
 import Link from "next/link";
+import SearchBar from "./SearchBar";
+import { User } from "../lib/api/users";
 
-type User = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  username: string;
+type UserTableProps = {
+  users: User[];
+  search: string;
+  onSearchChange: (value: string) => void;
 };
 
-export default function UserTable({ users }: { users: User[] }) {
+export default function UserTable({
+  users,
+  search,
+  onSearchChange,
+}: UserTableProps) {
   return (
     <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
       <div className="flex items-center justify-between px-6 py-5 border-b bg-gradient-to-r from-gray-50 to-white">
@@ -20,7 +23,11 @@ export default function UserTable({ users }: { users: User[] }) {
           </p>
         </div>
         <div>
-            <SearchBar />
+          <SearchBar
+            key={search}
+            value={search}
+            onDebouncedChange={onSearchChange}
+          />
         </div>
       </div>
 
@@ -90,6 +97,12 @@ export default function UserTable({ users }: { users: User[] }) {
             ))}
           </tbody>
         </table>
+
+        {users.length === 0 && (
+          <p className="px-6 py-8 text-center text-gray-500">
+            No users found for this search.
+          </p>
+        )}
       </div>
     </div>
   );

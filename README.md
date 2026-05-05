@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Scalable React Admin Dashboard
 
-## Getting Started
+A production-style admin dashboard built with Next.js App Router for browsing users with search, pagination, and detail views.
 
-First, run the development server:
+## Live Demo
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Add deployed URL here after Vercel/Netlify deployment: `https://your-app-url`
+
+## Features Implemented
+
+- User listing dashboard in table format
+- User detail page (`/dashboard/[id]`)
+- Search with debouncing (400ms) to reduce unnecessary requests
+- Pagination with URL-based state (`page`, `search`)
+- API integration via `dummyjson` users endpoints
+- Loading states (`loading.tsx` + in-component loading UI)
+- Error handling (`dashboard/error.tsx`, `global-error.tsx`)
+- Responsive table layout with horizontal overflow support
+- Route/component level code splitting
+
+## Tech Stack
+
+- Next.js 16 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS
+- TanStack React Query
+
+## Project Structure
+
+```text
+app/
+  components/
+    DashboardClient.tsx
+    SearchBar.tsx
+    UserTable.tsx
+  dashboard/
+    [id]/
+      loading.tsx
+      page.tsx
+    error.tsx
+    loading.tsx
+    layout.tsx
+    page.tsx
+  lib/
+    api/
+      users.tsx
+  global-error.tsx
+  layout.tsx
+  page.tsx
+  providers.tsx
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup Instructions
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Install dependencies:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   npm install
+   ```
 
-## Learn More
+2. Run development server:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm run dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Open:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   [http://localhost:3000](http://localhost:3000)
 
-## Deploy on Vercel
+4. Build for production:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm run build
+   npm run start
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Architecture Decisions
+
+- **App Router + route segments:** Keeps listing and detail pages isolated and scalable.
+- **API layer in `app/lib/api`:** Prevents inline API calls inside UI components and centralizes fetch logic.
+- **URL as filter state source:** Search and pagination are encoded in query params, enabling deep links and shareable views.
+- **Client dashboard shell:** Query-driven client component for responsive filtering/pagination while keeping route conventions clean.
+
+## State Management Approach
+
+TanStack React Query is used for server-state management on the dashboard listing page.
+
+Why React Query:
+
+- Handles async loading/error/data states in a structured way.
+- Gives cache-based query keys (`["users", page, search]`) for predictable refetch behavior.
+- Scales better than custom `useEffect` data fetching as feature complexity grows.
+
+## Performance Considerations
+
+- **Debounced search:** Reduces API calls during typing.
+- **Code splitting:** Dashboard table is lazy loaded with dynamic import.
+- **Query key caching:** Avoids redundant network fetches for the same state.
+- **Narrow payload per request:** Uses `limit` and `skip` to avoid loading large datasets.
+
+## Error Handling Strategy
+
+- API layer throws explicit errors for failed responses.
+- Route-level boundary at `app/dashboard/error.tsx` handles dashboard failures.
+- Global boundary at `app/global-error.tsx` prevents full app crashes.
+- User-facing fallback UI with retry action (`unstable_retry`) for recovery.
+
+## Assumptions and Trade-offs
+
+- Used pagination instead of infinite scrolling for simpler UX and URL-driven navigation.
+- Server data source is public API (`dummyjson`) with no auth requirements.
+- Minimal design system is used; focus is on usability and architecture over aesthetics.
+
+## Deployment Notes
+
+- Deploy on Vercel or Netlify.
+- For this Next.js App Router setup, routing works correctly on refresh by default on Vercel.
+- After deployment, update the **Live Demo** section with the final URL.
